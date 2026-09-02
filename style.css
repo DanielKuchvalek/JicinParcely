@@ -1,0 +1,242 @@
+:root {
+    --viagem-blue: #0052cc;
+    --viagem-blue-dark: #0747a6;
+    --viagem-blue-light: #e9f2ff;
+    --viagem-navy: #091e42;
+    --viagem-text: #172b4d;
+    --viagem-muted: #6b778c;
+    --viagem-bg: #f4f5f7;
+    --viagem-white: #ffffff;
+    --viagem-border: #dfe1e6;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--viagem-bg);
+    color: var(--viagem-text);
+}
+
+#sidebar {
+    width: 380px;
+    background: var(--viagem-white);
+    padding: 28px 24px;
+    box-shadow: 4px 0 24px rgba(9, 30, 66, 0.08);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+header {
+    border-bottom: 1px solid var(--viagem-border);
+    padding-bottom: 16px;
+}
+
+.brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-dot {
+    width: 14px;
+    height: 14px;
+    background: var(--viagem-blue);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+header h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--viagem-navy);
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: var(--viagem-muted);
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.search-form {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--viagem-border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-form input:focus {
+    border-color: var(--viagem-blue);
+}
+
+.search-btn {
+    background: var(--viagem-navy);
+    color: var(--viagem-white);
+    border: none;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.search-btn:hover {
+    background: var(--viagem-blue);
+}
+
+.card {
+    background: var(--viagem-white);
+    border: 1px solid var(--viagem-border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(9, 30, 66, 0.04);
+}
+
+.badge {
+    display: inline-block;
+    background: var(--viagem-blue-light);
+    color: var(--viagem-blue);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card h2 {
+    font-size: 1.35rem;
+    color: var(--viagem-navy);
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--viagem-muted);
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ebecf0;
+}
+
+.info-row strong {
+    color: var(--viagem-text);
+    font-weight: 600;
+    text-align: right;
+    max-width: 60%;
+}
+
+.info-row code {
+    background: #f4f5f7;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--viagem-navy);
+}
+
+.actions-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--viagem-blue);
+    color: var(--viagem-white);
+    text-decoration: none;
+    padding: 11px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 82, 204, 0.25);
+}
+
+.btn:hover {
+    background: var(--viagem-blue-dark);
+    box-shadow: 0 4px 10px rgba(0, 82, 204, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #ebecf0;
+    color: var(--viagem-text);
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background: #dfe1e6;
+    box-shadow: none;
+}
+
+.empty-state {
+    color: var(--viagem-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 18px;
+    background: #fafbfc;
+    border: 1px dashed var(--viagem-border);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--viagem-blue);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 20px 0;
+}
+
+.error-box {
+    border-left: 4px solid #de350b;
+}
+
+.error-msg {
+    color: #de350b;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+#map {
+    flex: 1;
+    height: 100%;
+}
+
