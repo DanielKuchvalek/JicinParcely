@@ -1,4 +1,4 @@
-Zobrazení parcel okresu Jičín
+Zobrazení parcel okresu Jičín - Daniel Kuchválek
 
 Webová aplikace pro zobrazení parcel na mapě okresu Jičín. Je postavená tak, aby byla rychlá, nesekala se a fungovala v čistém PHP bez nutnosti instalovat složité knihovny.
 
@@ -21,11 +21,11 @@ Architektonická rozhodnutí a jak aplikace funguje
    - index.php a app.js – zobrazují mapu v prohlížeči (pomocí knihovny Leaflet.js).
 
 4. Odkazy do katastru a na Mapy.cz:
-   - Po kliknutí na parcelu se v bočním panelu zobrazí přímé odkazy na Nahlížení do katastru nemovitostí a na Mapy.cz na přesné místo.
+   - Po kliknutí na parcelu se v bočním panelu zobrazí přímé odkazy na Nahlížení do katastru nemovitostí(obecný odkaz) a na Mapy.cz na přesné místo.
 
 ---
 
-Co mě při práci překvapilo (Zápisník)
+Co mě při práci překvapilo
 
 1. Rozdělení dat na ČÚZK:
    - Z jednoho zdroje nešlo získat vše najednou. Mezinárodní služba INSPIRE dává přesné obrysy pozemků, ale chybí v ní české názvy druhů pozemků. Ty se proto dohledávají z národní služby WMS.
@@ -36,14 +36,14 @@ Co mě při práci překvapilo (Zápisník)
 
 ---
 
-Co by šlo do budoucna vylepšit (pro ostrý provoz)
+Co by šlo do budoucna vylepšit
 
 1. Vlastní databáze pozemků:
    - Pravidelné stahování dat katastru do vlastní prostorové databáze (PostgreSQL s PostGIS), aby aplikace nebyla závislá na rychlosti serverů ČÚZK.
 2. Vektorové dlaždice:
    - Umožnily by zvýrazňovat parcely už při pouhém najetí myší.
 3. Mezipaměť (Cache):
-   - Ukládání jednou načtených parcel do paměti (např. Redis), aby se stejná data nestahovala opakovaně.
+   - Ukládání jednou načtených parcel do paměti, aby se stejná data nestahovala opakovaně.
 
 ---
 
@@ -53,7 +53,16 @@ Předpoklady:
 - Nainstalované PHP verze 8.1 nebo novější s povolenými doplňky curl a simplexml.
 
 Postup:
-1. Otevřete příkazový řádek v hlavní složce projektu.
+1. Otevřete příkazový řádek v kořenovém adresáři projektu.
+   Například v mém lokálním prostředí přes XAMPP:
+   cd C:\xampp\htdocs\JicinParcely
+
 2. Spusťte vestavěný PHP server příkazem:
    php -S localhost:8000
-3. Otevřete webový prohlížeč na adrese http://localhost:8000
+   (Příkazový řádek nechte otevřený, server běží na pozadí.)
+
+   Pokud systém hlásí chybu, že příkaz 'php' nebyl rozpoznán (není přidaný v systémových proměnných PATH), zadejte přímou cestu k PHP (např. v XAMPPu):
+   C:\xampp\php\php.exe -S localhost:8000
+
+3. Otevřete webový prohlížeč a přejděte na adresu:
+   http://localhost:8000
