@@ -1,0 +1,448 @@
+/* Výřez z katastrální mapy – list A4 k tisku. Na obrazovce náhled listu, při tisku jen list. */
+
+:root {
+    --ink: #17232a;
+    --ink-soft: #4b5b64;
+    --line: #cfd6d2;
+    --paper: #ffffff;
+    --canvas: #e4e8e5;
+    --accent: #0d5c6d;
+    --select: #d81b60;
+    --font: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-label: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.45;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* Ovládání (jen na obrazovce) */
+
+.toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 12px 16px;
+    padding: 12px 20px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+}
+
+.toolbar label {
+    display: grid;
+    gap: 2px;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+.toolbar select {
+    height: 36px;
+    padding: 0 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    font-size: 15px;
+}
+
+.toolbar__spacer {
+    flex: 1;
+}
+
+.toolbar__hint,
+.toolbar__warning {
+    flex-basis: 100%;
+    font-size: 14px;
+}
+
+.toolbar__hint {
+    color: var(--ink-soft);
+}
+
+.toolbar__warning {
+    color: #9a3412;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    border-color: var(--ink-soft);
+}
+
+.button--primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.button--primary:hover {
+    background: #0a4a58;
+}
+
+.button:focus-visible,
+.toolbar select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.message {
+    max-width: 36rem;
+    margin: 15vh auto;
+    padding: 0 20px;
+}
+
+.message h1 {
+    font-family: var(--font-label);
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.message p {
+    margin-bottom: 20px;
+}
+
+/* List A4 */
+
+.sheet {
+    width: 210mm;
+    height: 297mm;
+    margin: 24px auto 48px;
+    padding: 10mm;
+    background: var(--paper);
+    box-shadow: 0 1px 3px rgba(23, 35, 42, 0.18), 0 8px 24px rgba(23, 35, 42, 0.12);
+    display: grid;
+    grid-template-columns: 190mm;
+    grid-template-rows: auto 190mm 1fr auto;
+    row-gap: 3mm;
+    overflow: hidden;
+    font-size: 9.5pt;
+    line-height: 1.35;
+}
+
+.sheet--landscape {
+    width: 297mm;
+    height: 210mm;
+    grid-template-columns: 207mm 65mm;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 5mm;
+}
+
+.sheet__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 6mm;
+    padding-bottom: 2mm;
+    border-bottom: 0.4mm solid var(--ink);
+}
+
+.sheet--landscape .sheet__head {
+    grid-column: 1 / -1;
+}
+
+.sheet__kicker {
+    color: var(--ink-soft);
+    font-size: 9pt;
+}
+
+.sheet__head h1 {
+    font-family: var(--font-label);
+    font-size: 17pt;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.sheet__date {
+    color: var(--ink-soft);
+    font-size: 9pt;
+    white-space: nowrap;
+}
+
+/* Mapové pole */
+
+/* content-box: rámeček leží vně, obrázek mapy má přesně rozměr mapového pole (kvůli měřítku) */
+.frame {
+    position: relative;
+    box-sizing: content-box;
+    overflow: hidden;
+    border: 0.3mm solid var(--ink);
+    background: var(--paper);
+}
+
+.sheet--landscape .frame {
+    grid-row: 2 / 4;
+}
+
+.frame__layer,
+.frame__overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.frame__overlay {
+    fill: none;
+}
+
+.outline-casing {
+    stroke: rgba(255, 255, 255, 0.85);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+}
+
+.outline {
+    stroke: var(--select);
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+    fill: rgba(216, 27, 96, 0.08);
+    fill-rule: evenodd;
+}
+
+.frame.is-broken::after {
+    content: "Část mapy se nepodařilo načíst. Obnovte stránku.";
+    position: absolute;
+    inset: auto 4mm 4mm auto;
+    padding: 1mm 2mm;
+    background: #fff;
+    color: #9a3412;
+}
+
+.frame__north,
+.frame__scale {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 1.5mm;
+    padding: 1.2mm 1.8mm;
+    background: rgba(255, 255, 255, 0.92);
+    border: 0.2mm solid var(--line);
+    border-radius: 1mm;
+}
+
+.frame__north {
+    top: 4mm;
+    right: 4mm;
+    flex-direction: column;
+    gap: 0.4mm;
+    font-family: var(--font-label);
+    font-weight: 600;
+    font-size: 9pt;
+    line-height: 1;
+}
+
+.frame__north svg {
+    width: 5mm;
+    height: 7mm;
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+}
+
+.frame__north .north-half {
+    fill: var(--ink);
+}
+
+.frame__scale {
+    left: 4mm;
+    bottom: 4mm;
+    gap: 3mm;
+    font-family: var(--font-label);
+    font-weight: 600;
+    font-size: 10pt;
+}
+
+.frame__scale svg {
+    overflow: visible;
+}
+
+.frame__scale text {
+    font-family: var(--font);
+    font-size: 2.6px;
+    text-anchor: middle;
+    fill: var(--ink);
+}
+
+.frame__scale text.unit {
+    text-anchor: start;
+}
+
+.bar-dark {
+    fill: var(--ink);
+    stroke: var(--ink);
+    stroke-width: 0.2;
+}
+
+.bar-light {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 0.2;
+}
+
+/* Údaje, přehledka, legenda */
+
+.sheet__info {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6mm;
+    align-content: start;
+}
+
+.sheet--landscape .sheet__info {
+    grid-column: 2;
+    grid-row: 2;
+    grid-template-columns: 1fr;
+    gap: 5mm;
+}
+
+.info div {
+    display: grid;
+    grid-template-columns: 30mm 1fr;
+    gap: 2mm;
+    padding: 1.1mm 0;
+    border-top: 0.2mm solid var(--line);
+}
+
+.sheet--landscape .info div {
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+
+.info dt {
+    color: var(--ink-soft);
+}
+
+.info dd {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+.sheet__side {
+    display: grid;
+    gap: 3mm;
+    align-content: start;
+}
+
+.inset {
+    position: relative;
+    border: 0.3mm solid var(--ink);
+    overflow: hidden;
+}
+
+.inset img,
+.inset svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.inset rect,
+.inset circle {
+    fill: rgba(216, 27, 96, 0.2);
+    stroke: var(--select);
+    stroke-width: 0.5;
+}
+
+.inset figcaption {
+    position: absolute;
+    left: 1mm;
+    bottom: 1mm;
+    padding: 0.3mm 1.2mm;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 7.5pt;
+}
+
+.legend {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1.2mm;
+    font-size: 8.5pt;
+}
+
+.legend li {
+    display: flex;
+    align-items: center;
+    gap: 2mm;
+}
+
+.legend svg {
+    width: 6mm;
+    height: 4mm;
+    flex: none;
+}
+
+.legend-parcel {
+    fill: rgba(216, 27, 96, 0.08);
+    stroke: var(--select);
+    stroke-width: 1.4;
+}
+
+.legend-line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1;
+}
+
+.sheet__foot {
+    padding-top: 2mm;
+    border-top: 0.2mm solid var(--line);
+    color: var(--ink-soft);
+    font-size: 7.5pt;
+}
+
+.sheet--landscape .sheet__foot {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+@media print {
+    body {
+        background: none;
+    }
+
+    .toolbar {
+        display: none;
+    }
+
+    .sheet {
+        margin: 0;
+        box-shadow: none;
+    }
+}
+
+@media screen and (max-width: 840px) {
+    .sheet {
+        zoom: 0.5;
+    }
+}
